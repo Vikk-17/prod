@@ -1,3 +1,5 @@
+use std::net::TcpListener;
+
 #[tokio::test]
 async fn health_check_works() {
     // spawn the app
@@ -8,7 +10,7 @@ async fn health_check_works() {
 
     // send the get request
     let response = client
-        .get("http://127.0.0.1:8080/health_check")
+        .get("http://127.0.0.1:0/health_check")
         .send()
         .await
         .expect("Failed to execute request");
@@ -19,8 +21,12 @@ async fn health_check_works() {
 }
 
 // Need to spawn the app
-fn spawn_app() {
-    let server = email_newsletter::run().expect("Failed to bind the address");
+fn spawn_app() -> String {
+    let listener = TcpListener::bind("127.0.0.1:0")
+        .expect("Failed to bind a random port");
+    let port = listener.local_addr().unwrap().port();
+    let server = email_newsletter::run(listener).expect("Failed to bind the address");
 
     let _ = tokio::spawn(server);
+    format!("http://127.0.0.1:{}", port)
 }
