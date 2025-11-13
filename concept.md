@@ -27,3 +27,5 @@ fn main() -> Result<(), Box<dyn std::error::Error>>
 ```
 
 ---
+
+- `tokio::spawan` takes the future and hands it over to the runtime for polling without waiting for its completion. It therefore runs conncurrently with downstream futures and tasks (eg, our test logic)

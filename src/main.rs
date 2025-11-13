@@ -1,6 +1,10 @@
+use std::net::TcpListener;
 use prod::*;
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
-    run()?.await // <- awaiting on the future
+    let listener = TcpListener::bind("127.0.0.1:0").expect("Failed to bind random port");
+    let port = listener.local_addr().unwrap().port();
+    println!("Server is running on http://127.0.0.1:{}", port);
+    run(listener)?.await // <- awaiting on the future
 }
