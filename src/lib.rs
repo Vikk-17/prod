@@ -1,27 +1,27 @@
-use actix_web::dev::Server;
-use actix_web::{App, HttpResponse, HttpServer, Responder, get, post, web};
-use std::net::TcpListener;
+use actix_web::{App, HttpRequest, HttpResponse, HttpServer, Responder, get, web};
 
-
+#[get("/health_check")]
 async fn health_check() -> impl Responder {
-    HttpResponse::Ok().finish()
+    HttpResponse::Ok().body("Ok")
 }
 
-async fn post_handler(bytes: web::Bytes) -> impl Responder {
-    match String::from_utf8(bytes.to_vec()) {
-        Ok(text) => Ok(format!("Testing your name: {}", text)),
-        Err(_) => Err(HttpResponse::BadRequest().into()),
-    } 
+// match_info() is an unsafe option
+// use into_inner or use struct that implements serde deserialization
+async fn greet(req: HttpRequest) -> impl Responder {
+    let name = req.match_info().get("name").unwrap_or("world");
+    format!("Hello {}", name)
 }
 
-pub fn run(listener: TcpListener) -> Result<Server, std::io::Error> {
-    let server = HttpServer::new(|| {
+pub async fn run() -> Result<(), std::io::Error> {
+    println!("Server is running in http://localhost:3030/");
+
+    HttpServer::new(|| {
         App::new()
-            .route("/health_check", web::get().to(health_check))
-            .route("/handler", web::post().to(post_handler))
+            .service(health_check)
+            .route("/", web::get().to(greet))
+            .route("/{name}", web::get().to(greet))
     })
-    .listen(listener)?
-    .run();
-
-    Ok(server)
+    .bind(("127.0.0.1", 3000))?
+    .run()
+    .await
 }
