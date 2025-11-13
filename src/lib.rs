@@ -1,8 +1,9 @@
 use actix_web::{App, HttpRequest, HttpResponse, HttpServer, Responder, get, web};
+use actix_web::dev::Server;
 
 #[get("/health_check")]
 async fn health_check() -> impl Responder {
-    HttpResponse::Ok().body("Ok")
+    HttpResponse::Ok()
 }
 
 // match_info() is an unsafe option
@@ -12,16 +13,17 @@ async fn greet(req: HttpRequest) -> impl Responder {
     format!("Hello {}", name)
 }
 
-pub async fn run() -> Result<(), std::io::Error> {
+pub fn run() -> Result<Server, std::io::Error> {
     println!("Server is running in http://localhost:3030/");
 
-    HttpServer::new(|| {
+    let server = HttpServer::new(|| {
         App::new()
             .service(health_check)
             .route("/", web::get().to(greet))
             .route("/{name}", web::get().to(greet))
     })
     .bind(("127.0.0.1", 3000))?
-    .run()
-    .await
+    .run();
+
+    Ok(server)
 }

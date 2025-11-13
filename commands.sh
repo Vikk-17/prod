@@ -4,4 +4,4 @@
 rustup toolchain install nightly --allow-downgrade
 cargo +nightly expand 
 cargo expand
-cargo expand --test health_check
+cargo expand --test health_check # <- name of the test file
