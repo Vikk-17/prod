@@ -1,24 +1,34 @@
 use actix_web::dev::Server;
-use actix_web::{App, HttpResponse, HttpServer, Responder, get, post, web};
+use actix_web::{App, HttpResponse, HttpServer, web};
+use serde::Deserialize;
 use std::net::TcpListener;
 
+#[derive(Deserialize)]
+struct FormData {
+    name: String,
+    email: String,
+}
 
-async fn health_check() -> impl Responder {
+async fn health_check() -> HttpResponse {
     HttpResponse::Ok().finish()
 }
 
-async fn post_handler(bytes: web::Bytes) -> impl Responder {
-    match String::from_utf8(bytes.to_vec()) {
-        Ok(text) => Ok(format!("Testing your name: {}", text)),
-        Err(_) => Err(HttpResponse::BadRequest().into()),
-    } 
+async fn subscribe(_form: web::Form<FormData>) -> HttpResponse {
+    HttpResponse::Ok().finish()
 }
+
+// match_info() is an unsafe option
+// use into_inner or use struct that implements serde deserialization
+// async fn greet(req: HttpRequest) -> impl Responder {
+//     let name = req.match_info().get("name").unwrap_or("world");
+//     format!("Hello {}", name)
+// }
 
 pub fn run(listener: TcpListener) -> Result<Server, std::io::Error> {
     let server = HttpServer::new(|| {
         App::new()
             .route("/health_check", web::get().to(health_check))
-            .route("/handler", web::post().to(post_handler))
+            .route("/subscriptions", web::post().to(subscribe))
     })
     .listen(listener)?
     .run();
