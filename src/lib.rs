@@ -1,7 +1,7 @@
-use actix_web::{App, HttpResponse, HttpServer, web};
 use actix_web::dev::Server;
-use std::net::TcpListener;
+use actix_web::{App, HttpResponse, HttpServer, web};
 use serde::Deserialize;
+use std::net::TcpListener;
 
 #[derive(Deserialize)]
 struct FormData {
