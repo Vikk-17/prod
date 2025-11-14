@@ -1,5 +1,5 @@
-use actix_web::{web, HttpResponse};
-use serde::{Deserialize};
+use actix_web::{HttpResponse, web};
+use serde::Deserialize;
 
 #[derive(Deserialize)]
 pub struct FormData {
