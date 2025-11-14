@@ -523,7 +523,6 @@ dependencies = [
 ]
 
 [[package]]
-<<<<<<< HEAD
 name = "dotenvy"
 version = "0.15.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -539,8 +538,6 @@ dependencies = [
 ]
 
 [[package]]
-=======
->>>>>>> 56df43648595b2244ec54f45a82cec075c1f2f02
 name = "encoding_rs"
 version = "0.8.35"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1563,10 +1560,7 @@ dependencies = [
  "actix-web",
  "reqwest",
  "serde",
-<<<<<<< HEAD
  "sqlx",
-=======
->>>>>>> 56df43648595b2244ec54f45a82cec075c1f2f02
  "tokio",
 ]
 
