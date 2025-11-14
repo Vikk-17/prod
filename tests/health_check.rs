@@ -75,6 +75,7 @@ fn spawn_app() -> String {
     let listerner = TcpListener::bind("127.0.0.1:0").expect("Failed to random port");
     let port = listerner.local_addr().unwrap().port();
     let server = startup::run(listerner).expect("Failed to bind address");
+    let server = prod::run(listerner).expect("Failed to bind address");
     let _ = tokio::spawn(server);
     format!("http://127.0.0.1:{}", port)
 }
